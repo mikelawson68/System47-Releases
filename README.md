@@ -21,10 +21,16 @@ This repository is used to host downloads, track bugs, and distribute test build
 
 ## Modern Screen Saver for macOS 27
 
-This community contribution preserves meWho’s original System 47 Viewer 2.5.01
-SWF content and runs it through Ruffle inside native macOS components. Unlike
-the portable 2022 Flash Projector viewer, this edition installs an actual
-Screen Saver component and includes native multi-monitor configuration.
+**New August 2026 macOS adaptation:** this is no longer an Adobe Flash Player
+or Flash Projector application and does not require Adobe Flash. The obsolete
+2022 projector runtime has been replaced by the actively maintained Ruffle
+runtime plus new native macOS components.
+
+For accuracy, meWho’s original System 47 Viewer 2.5.01 SWF remains the preserved
+program-content format; Ruffle executes that content without Adobe Flash. This
+edition installs an actual macOS Screen Saver component and adds native
+multi-monitor configuration, current Apple Silicon support, Developer ID
+signing, hardened runtime and Apple notarization.
 
 ### Compatibility
 
@@ -56,9 +62,10 @@ NASA/JPL-Caltech. System 47 is freeware, provided “as is,” without warranty 
 any kind. Modern macOS adaptation and packaging freely contributed by
 **artistpro, LLC — Mike Lawson**.
 
-The modern package uses Ruffle rather than the original Shockpkg/Adobe Flash
-Projector. Visit [mewho.com/system47](https://www.mewho.com/system47/) for the
-original releases and to support future System 47 development.
+The August 2026 package uses Ruffle and newly written native macOS integration
+rather than the original Shockpkg/Adobe Flash Projector. Visit
+[mewho.com/system47](https://www.mewho.com/system47/) for the original releases
+and to support future System 47 development.
 
 <br>
 
