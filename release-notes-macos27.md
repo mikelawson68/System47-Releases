@@ -36,6 +36,9 @@ format. Ruffle executes it without Adobe Flash.
   control.
 - The native screen saver launches the full-screen companion directly, so it
   works without a background watcher or LaunchAgent.
+- Screen Sharing pointer updates no longer dismiss the full-screen animation.
+- The animation loader uses IPv6 loopback, fixing the permanent white screen
+  seen on Macs where IPv4 loopback is unavailable or filtered.
 - Existing installations remove the obsolete watcher during upgrade.
 
 The application and Screen Saver components are Developer ID signed by
@@ -56,4 +59,4 @@ releases and to support future System 47 development.
 ## Checksum
 
 SHA-256:
-`804ee5b436e526837f7d876bc1a4109875ed100284a564b8b8b072b4cc799f23`
+`b2916c86cf7c2a7a70d112eea1d184b87591c82b85beb7ab48943396bff04e7c`
