@@ -28,6 +28,16 @@ format. Ruffle executes it without Adobe Flash.
 5. Configure each display in the System 47 settings panel.
 6. Select **System 47** in **System Settings → Wallpaper → Screen Saver**.
 
+## August 30 maintenance update
+
+- The System Settings preview now renders the live System 47 animation instead
+  of a static image.
+- The Options sheet now closes normally with its Done button or window close
+  control.
+- The native screen saver launches the full-screen companion directly, so it
+  works without a background watcher or LaunchAgent.
+- Existing installations remove the obsolete watcher during upgrade.
+
 The application and Screen Saver components are Developer ID signed by
 artistpro, LLC, use hardened runtime, and are notarized and stapled by Apple.
 
@@ -46,4 +56,4 @@ releases and to support future System 47 development.
 ## Checksum
 
 SHA-256:
-`eb84e7387f910cdf4fa46056886d95325adb55eaee9399893ee8a3e15c7c5b5b`
+`804ee5b436e526837f7d876bc1a4109875ed100284a564b8b8b072b4cc799f23`

@@ -54,8 +54,12 @@ signing, hardened runtime and Apple notarization.
 6. Open **System Settings → Wallpaper → Screen Saver** and select **System 47**
    under **Other**.
 
+The current package includes an animated System Settings preview, a closable
+Options sheet, and direct native-saver launch of the full-screen companion. It
+does not require a permanently running background watcher.
+
 SHA-256:
-`eb84e7387f910cdf4fa46056886d95325adb55eaee9399893ee8a3e15c7c5b5b`
+`804ee5b436e526837f7d876bc1a4109875ed100284a564b8b8b072b4cc799f23`
 
 Original System 47 program and content by **meWho**. Space images courtesy
 NASA/JPL-Caltech. System 47 is freeware, provided “as is,” without warranty of
