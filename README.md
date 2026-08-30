@@ -49,9 +49,13 @@ signing, hardened runtime and Apple notarization.
 4. If macOS blocks the installer script, Control-click it, select **Open**, and
    click **Open** once. The application and Screen Saver components themselves
    are Developer ID signed, hardened, notarized and stapled by Apple.
-5. Choose sound, timing and the starting program for each display in the
+5. If it is still blocked, open **System Settings → Privacy & Security**, scroll
+   to **Security**, click **Open Anyway** for `Install System 47.command`,
+   authenticate when prompted, and confirm **Open**. Only approve the installer
+   from this official System 47 download.
+6. Choose sound, timing and the starting program for each display in the
    System 47 settings panel.
-6. Open **System Settings → Wallpaper → Screen Saver** and select **System 47**
+7. Open **System Settings → Wallpaper → Screen Saver** and select **System 47**
    under **Other**.
 
 The current package includes an animated System Settings preview, a closable
@@ -59,7 +63,7 @@ Options sheet, and direct native-saver launch of the full-screen companion. It
 does not require a permanently running background watcher.
 
 SHA-256:
-`804ee5b436e526837f7d876bc1a4109875ed100284a564b8b8b072b4cc799f23`
+`3a9540970c0b88f0a20f98ab9280f1a3ed681f2e3af59ee24c677aece1e54d51`
 
 Original System 47 program and content by **meWho**. Space images courtesy
 NASA/JPL-Caltech. System 47 is freeware, provided “as is,” without warranty of

@@ -25,8 +25,12 @@ format. Ruffle executes it without Adobe Flash.
 3. Double-click `Install System 47.command`.
 4. If macOS blocks the installer script, Control-click it, choose **Open**, and
    click **Open** once.
-5. Configure each display in the System 47 settings panel.
-6. Select **System 47** in **System Settings → Wallpaper → Screen Saver**.
+5. If it is still blocked, open **System Settings → Privacy & Security**, scroll
+   to **Security**, click **Open Anyway** for `Install System 47.command`,
+   authenticate when prompted, and confirm **Open**. Only approve the installer
+   from this official System 47 download.
+6. Configure each display in the System 47 settings panel.
+7. Select **System 47** in **System Settings → Wallpaper → Screen Saver**.
 
 ## August 30 maintenance update
 
@@ -59,4 +63,4 @@ releases and to support future System 47 development.
 ## Checksum
 
 SHA-256:
-`b2916c86cf7c2a7a70d112eea1d184b87591c82b85beb7ab48943396bff04e7c`
+`3a9540970c0b88f0a20f98ab9280f1a3ed681f2e3af59ee24c677aece1e54d51`
