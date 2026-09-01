@@ -38,12 +38,16 @@ format. Ruffle executes it without Adobe Flash.
   of a static image.
 - The Options sheet now closes normally with its Done button or window close
   control.
-- The native screen saver launches the full-screen companion directly, so it
-  works without a background watcher or LaunchAgent.
+- The native screen saver launches the full-screen companion directly, while a
+  per-user watcher provides System 47's idle timer and bottom-right hot corner.
+- Installation removes only a competing Apple “Start Screen Saver” assignment
+  from that corner, preventing the static bridge preview from covering System
+  47. Other hot-corner assignments are preserved.
 - Screen Sharing pointer updates no longer dismiss the full-screen animation.
 - The animation loader uses IPv6 loopback, fixing the permanent white screen
   seen on Macs where IPv4 loopback is unavailable or filtered.
-- Existing installations remove the obsolete watcher during upgrade.
+- Existing installations replace and restart the System 47 watcher during
+  upgrade.
 
 The application and Screen Saver components are Developer ID signed by
 artistpro, LLC, use hardened runtime, and are notarized and stapled by Apple.
@@ -63,4 +67,4 @@ releases and to support future System 47 development.
 ## Checksum
 
 SHA-256:
-`3a9540970c0b88f0a20f98ab9280f1a3ed681f2e3af59ee24c677aece1e54d51`
+`17b7a59ef7c5641cb8d86ab87eff920530e75e4c4d41efe3adf4fd0957df72c4`
