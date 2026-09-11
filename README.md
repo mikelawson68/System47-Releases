@@ -38,9 +38,9 @@ signing, hardened runtime and Apple notarization.
 
 ### Compatibility
 
-* macOS 27 or later
+* macOS 26/27 or later Untested with earlier but likely works)
 * Apple Silicon: M1, M2, M3, M4, M5 and later families
-* Intel Macs capable of running macOS 27
+* Intel Macs capable of running macOS 26/27
 * Universal `arm64` and `x86_64` native binaries
 * Multiple displays with an independently assigned starting LCARS program
 
