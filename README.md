@@ -14,6 +14,10 @@ This repository is used to host downloads, track bugs, and distribute test build
 * **System 47 Screen Saver — modern macOS adaptation** (macOS 27, Apple Silicon and Intel)
 
 ## Downloads
+* **Static-image hot-corner repair:** if the corner shows a still image while
+  the app's Preview works, use the [direct launcher repair](src/launcher/README.md).
+  It adds a bottom-left hot corner and three-hour timer to an existing native
+  installation. The published release ZIP is unchanged.
 * Versions previously released in 2021-2022, visit this **[Release](../../releases/tag/v2.5.1)** page.
 * Latest **Test Version** ⚠️ (July 8, 2026), please visit this **[Test Release](../../releases/tag/v2.5.2-test3)** page.
 * **macOS 27 Screen Saver:** download the notarized universal package from the **[macOS 27 Release](../../releases/tag/v2.5.01-macos27)** page.
