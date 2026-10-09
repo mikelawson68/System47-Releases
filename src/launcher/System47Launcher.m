@@ -1,5 +1,6 @@
 #import <AppKit/AppKit.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <IOKit/pwr_mgt/IOPMLib.h>
 #import <math.h>
 
 static NSString *rendererPath(void) {
@@ -16,6 +17,7 @@ static BOOL inCorner(NSPoint p, NSRect r) {
 @property BOOL cornerLatched;
 @property BOOL idleLatched;
 @property NSTimeInterval nextLaunch;
+@property NSTimeInterval nextIdleSuppression;
 @property NSString *requestPath;
 - (void)tick;
 @end
@@ -31,6 +33,12 @@ static BOOL inCorner(NSPoint p, NSRect r) {
         [prefs synchronize];
         double threshold = [prefs doubleForKey:@"idleSeconds"];
         if (!isfinite(threshold) || threshold < 0) threshold = 10800;
+        if (threshold == 0 && NSDate.timeIntervalSinceReferenceDate >= self.nextIdleSuppression) {
+            IOPMAssertionID assertion = kIOPMNullAssertionID;
+            IOPMAssertionDeclareUserActivity(CFSTR("System47 automatic launch disabled"),
+                                              kIOPMUserActiveLocal, &assertion);
+            self.nextIdleSuppression = NSDate.timeIntervalSinceReferenceDate + 30;
+        }
         if (!corner) self.cornerLatched = NO;
         if (idle < 2) self.idleLatched = NO;
         BOOL requested = [[NSFileManager defaultManager] fileExistsAtPath:self.requestPath];

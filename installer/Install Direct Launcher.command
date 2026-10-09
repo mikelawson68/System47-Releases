@@ -25,7 +25,7 @@ xcrun --find clang >/dev/null || {
 # private to this user; no downloaded installer code or administrator rights.
 build_dir=$(mktemp -d "${TMPDIR:-/tmp/}system47-launcher.XXXXXX")
 trap 'rm -rf "$build_dir"' EXIT
-xcrun clang -fobjc-arc -framework AppKit -framework CoreGraphics \
+xcrun clang -fobjc-arc -framework AppKit -framework CoreGraphics -framework IOKit \
     "$source_file" -o "$build_dir/System47Launcher"
 "$build_dir/System47Launcher" --check
 

@@ -31,6 +31,9 @@ the three-hour interval later, choose a new interval in System 47 Settings and
 click Save. Choose **Never** to disable automatic idle launch while retaining
 manual and hot-corner launch. The helper reads
 `com.mewho.system47.fullscreen` → `idleSeconds`.
+While **Never** is selected, the helper also refreshes macOS user-activity state
+so the separate Apple idle screen cannot appear behind System 47's disabled
+timer. Display sleep settings are not changed.
 It runs at login after a reboot and is restarted by launchd if it exits.
 
 ## Passwords and sleep
