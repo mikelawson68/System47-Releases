@@ -45,12 +45,12 @@
 
     [content addSubview:[self label:@"Start after" frame:NSMakeRect(24, height-112, 90, 22) bold:YES]];
     self.idlePopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(112, height-118, 180, 28) pullsDown:NO];
-    NSArray *idleNames = @[@"5 seconds", @"1 minute", @"5 minutes", @"10 minutes", @"30 minutes", @"1 hour", @"3 hours"];
-    NSArray *idleValues = @[@5, @60, @300, @600, @1800, @3600, @10800];
+    NSArray *idleNames = @[@"Never", @"5 seconds", @"1 minute", @"5 minutes", @"10 minutes", @"30 minutes", @"1 hour", @"3 hours"];
+    NSArray *idleValues = @[@0, @5, @60, @300, @600, @1800, @3600, @10800];
     [self.idlePopup addItemsWithTitles:idleNames];
     for (NSInteger i=0; i<idleValues.count; i++) self.idlePopup.itemArray[i].representedObject = idleValues[i];
     NSTimeInterval savedIdle = [[[NSUserDefaults alloc] initWithSuiteName:@"com.mewho.system47.fullscreen"] doubleForKey:@"idleSeconds"];
-    NSInteger best = 3; for (NSInteger i=0; i<idleValues.count; i++) if ([idleValues[i] doubleValue] == savedIdle) best = i;
+    NSInteger best = 0; for (NSInteger i=0; i<idleValues.count; i++) if ([idleValues[i] doubleValue] == savedIdle) best = i;
     [self.idlePopup selectItemAtIndex:best]; [content addSubview:self.idlePopup];
 
     self.audioButton = [NSButton checkboxWithTitle:@"Play original System 47 sound" target:nil action:nil];
@@ -196,7 +196,7 @@ static void RunWatcher(void) {
         CFTimeInterval idle = CGEventSourceSecondsSinceLastEventType(kCGEventSourceStateCombinedSessionState,
                                                                      kCGAnyInputEventType);
         NSTimeInterval configured = [settings doubleForKey:@"idleSeconds"];
-        NSTimeInterval threshold = configured >= 5.0 ? configured : 600.0;
+        NSTimeInterval threshold = configured >= 5.0 ? configured : 0.0;
         if (viewer && !viewer.running) viewer = nil;
         if (!launchedFromSystem && viewer && viewer.running && CFAbsoluteTimeGetCurrent() - viewerStartedAt > 2.0 && idle < 1.0) {
             [viewer terminate];
@@ -238,8 +238,8 @@ static void RunWatcher(void) {
             viewerStartedAt = CFAbsoluteTimeGetCurrent();
             launchedFromCorner = YES;
         }
-        if (idle < threshold) launchedForThisIdlePeriod = NO;
-        if (!launchedForThisIdlePeriod && !viewer && idle >= threshold) {
+        if (threshold > 0.0 && idle < threshold) launchedForThisIdlePeriod = NO;
+        if (threshold > 0.0 && !launchedForThisIdlePeriod && !viewer && idle >= threshold) {
             viewer = [[NSTask alloc] init];
             viewer.executableURL = [NSURL fileURLWithPath:executable];
             viewer.arguments = @[@"--show"];

@@ -28,7 +28,9 @@ main screen. No keyboard content is read or recorded.
 
 The native app retains its sound and per-display program settings. To change
 the three-hour interval later, choose a new interval in System 47 Settings and
-click Save. The helper reads `com.mewho.system47.fullscreen` → `idleSeconds`.
+click Save. Choose **Never** to disable automatic idle launch while retaining
+manual and hot-corner launch. The helper reads
+`com.mewho.system47.fullscreen` → `idleSeconds`.
 It runs at login after a reboot and is restarted by launchd if it exits.
 
 ## Passwords and sleep

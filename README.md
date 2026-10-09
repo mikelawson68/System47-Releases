@@ -57,7 +57,7 @@ signing, hardened runtime and Apple notarization.
    to **Security**, click **Open Anyway** for `Install System 47.command`,
    authenticate when prompted, and confirm **Open**. Only approve the installer
    from this official System 47 download.
-6. Choose sound, timing and the starting program for each display in the
+6. Choose sound, timing (including **Never**) and the starting program for each display in the
    System 47 settings panel.
 7. Open **System Settings → Wallpaper → Screen Saver** and select **System 47**
    under **Other**.
@@ -67,6 +67,9 @@ Options sheet, direct native-saver launch of the full-screen companion, and a
 per-user watcher for System 47's idle timer and bottom-right hot corner. During
 installation, only a competing Apple “Start Screen Saver” assignment on that
 corner is removed; all other hot-corner assignments are preserved.
+
+Setting **Start after** to **Never** disables only the automatic idle launch.
+Manual launch and the configured hot corner remain available.
 
 SHA-256:
 `17b7a59ef7c5641cb8d86ab87eff920530e75e4c4d41efe3adf4fd0957df72c4`
