@@ -13,13 +13,13 @@ System 47 app animates correctly. This helper uses that working renderer path:
 4. Run `installer/Install Direct Launcher.command`.
 
 The repair compiles the helper locally and installs a per-user LaunchAgent. It
-replaces the package's background watcher, takes over the bottom-left corner,
+replaces the package's background watcher, takes over the top-right corner,
 and sets the idle interval to three hours. Apple’s competing corner assignment
 and screensaver timer are disabled; the helper provides both triggers instead.
 Consequently, Apple's Hot Corners panel shows no assignment for that corner,
 and its screen-saver timer shows Never. This is expected.
 
-Move the pointer into the bottom-left corner of any connected display to start
+Move the pointer into the top-right corner of any connected display to start
 the animation on all displays. Leave the corner before triggering it again.
 The helper prevents duplicate launches while its renderer is running and waits
 briefly after dismissal before accepting another trigger. Display coordinates

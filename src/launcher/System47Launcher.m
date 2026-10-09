@@ -2,9 +2,13 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <math.h>
 
-static NSString *const Renderer = @"/Applications/System 47.app/Contents/MacOS/System47FullScreen";
+static NSString *rendererPath(void) {
+    NSString *systemPath = @"/Applications/System 47.app/Contents/MacOS/System47FullScreen";
+    if ([[NSFileManager defaultManager] isExecutableFileAtPath:systemPath]) return systemPath;
+    return [NSHomeDirectory() stringByAppendingPathComponent:@"Applications/System 47.app/Contents/MacOS/System47FullScreen"];
+}
 static BOOL inCorner(NSPoint p, NSRect r) {
-    return p.x >= NSMinX(r) && p.x <= NSMinX(r)+3 && p.y >= NSMinY(r) && p.y <= NSMinY(r)+3;
+    return p.x >= NSMaxX(r)-3 && p.x <= NSMaxX(r) && p.y >= NSMaxY(r)-3 && p.y <= NSMaxY(r);
 }
 
 @interface Launcher : NSObject
@@ -44,12 +48,12 @@ static BOOL inCorner(NSPoint p, NSRect r) {
         self.idleLatched = YES;
         self.nextLaunch = NSDate.timeIntervalSinceReferenceDate + 3;
         NSTask *task = [[NSTask alloc] init];
-        task.executableURL = [NSURL fileURLWithPath:Renderer];
+        task.executableURL = [NSURL fileURLWithPath:rendererPath()];
         task.arguments = @[@"--show"];
         NSError *error = nil;
         if ([task launchAndReturnError:&error]) {
             self.renderer = task;
-            NSLog(@"System47 launched: %@; displays=%lu", requested ? @"verification" : cornerTrigger ? @"bottom-left corner" : @"idle timer", (unsigned long)NSScreen.screens.count);
+            NSLog(@"System47 launched: %@; displays=%lu", requested ? @"verification" : cornerTrigger ? @"top-right corner" : @"idle timer", (unsigned long)NSScreen.screens.count);
         } else {
             NSLog(@"System47 launch failed: %@", error);
         }
@@ -69,14 +73,14 @@ int main(int argc, const char *argv[]) {
         if (argc > 1 && strcmp(argv[1], "--check") == 0) {
             for (NSScreen *s in NSScreen.screens) {
                 NSRect r = s.frame;
-                if (!inCorner(NSMakePoint(NSMinX(r)+1,NSMinY(r)+1),r) || inCorner(NSMakePoint(NSMinX(r)+10,NSMinY(r)+10),r)) return 1;
-                NSLog(@"%@ bottom-left=(%.0f,%.0f)",s.localizedName, NSMinX(r),NSMinY(r));
+                if (!inCorner(NSMakePoint(NSMaxX(r)-1,NSMaxY(r)-1),r) || inCorner(NSMakePoint(NSMaxX(r)-10,NSMaxY(r)-10),r)) return 1;
+                NSLog(@"%@ top-right=(%.0f,%.0f)",s.localizedName, NSMaxX(r),NSMaxY(r));
             }
             return NSScreen.screens.count ? 0 : 1;
         }
         Launcher *launcher = [[Launcher alloc] init];
         launcher.requestPath = request;
-        NSLog(@"System47 launcher ready; bottom-left hot corner and saved idle timer enabled");
+        NSLog(@"System47 launcher ready; top-right hot corner and saved idle timer enabled");
         [NSTimer scheduledTimerWithTimeInterval:0.2 repeats:YES block:^(NSTimer *timer) { [launcher tick]; }];
         [NSApp run];
     }

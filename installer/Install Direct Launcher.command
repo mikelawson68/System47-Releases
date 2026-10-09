@@ -32,7 +32,7 @@ xcrun clang -fobjc-arc -framework AppKit -framework CoreGraphics \
 mkdir -p "$support" "$agent_dir" "$HOME/Library/Logs"
 backup="$support/backups/$(date +%Y%m%d-%H%M%S)-$$"
 mkdir -p "$backup"
-for key in wvous-bl-corner wvous-bl-modifier; do
+for key in wvous-tr-corner wvous-tr-modifier; do
     defaults read com.apple.dock "$key" > "$backup/$key.txt" 2>/dev/null || print 0 > "$backup/$key.txt"
 done
 defaults -currentHost read com.apple.screensaver idleTime > "$backup/apple-idleTime.txt" 2>/dev/null || print 0 > "$backup/apple-idleTime.txt"
@@ -65,12 +65,12 @@ cp "$build_dir/agent.plist" "$agent"
 
 # The helper owns the corner and timer. Apple must not cover the renderer with
 # its legacy host. This does not alter screen-lock or display-sleep settings.
-defaults write com.apple.dock wvous-bl-corner -int 0
-defaults write com.apple.dock wvous-bl-modifier -int 0
+defaults write com.apple.dock wvous-tr-corner -int 0
+defaults write com.apple.dock wvous-tr-modifier -int 0
 defaults -currentHost write com.apple.screensaver idleTime -int 0
 defaults write com.mewho.system47.fullscreen idleSeconds -float 10800
 killall Dock >/dev/null 2>&1 || true
 launchctl bootstrap "$user_domain" "$agent"
-print 'Installed: bottom-left hot corner, three idle hours, automatic start at login.'
+print 'Installed: top-right hot corner, three idle hours, automatic start at login.'
 print 'The signed System 47 app and macOS password requirements were not changed.'
 print "Previous settings and launch agents: $backup"

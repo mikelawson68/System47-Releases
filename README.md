@@ -16,7 +16,7 @@ This repository is used to host downloads, track bugs, and distribute test build
 ## Downloads
 * **Static-image hot-corner repair:** if the corner shows a still image while
   the app's Preview works, use the [direct launcher repair](src/launcher/README.md).
-  It adds a bottom-left hot corner and three-hour timer to an existing native
+  It adds a top-right hot corner and three-hour timer to an existing native
   installation. The published release ZIP is unchanged.
 * Versions previously released in 2021-2022, visit this **[Release](../../releases/tag/v2.5.1)** page.
 * Latest **Test Version** ⚠️ (July 8, 2026), please visit this **[Test Release](../../releases/tag/v2.5.2-test3)** page.
