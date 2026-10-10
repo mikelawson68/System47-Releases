@@ -31,6 +31,7 @@ a small background app instead, without using ScreenSaverEngine.
 - Defaults to **20 minutes**; **Never** disables automatic starting.
 - Starts manually after a three-second pointer hold at the **top center**.
 - Provides a Dock-free **47** menu-bar icon for Settings, Start Now, and Quit.
+- Includes a proper System 47 icon in Finder and the temporary Dock item.
 - Stops on pointer movement, click, scroll, or key press.
 - Can optionally go to the macOS login screen after closing; off by default.
 - Starts its lightweight background process automatically at user login.
@@ -73,4 +74,4 @@ releases and to support future System 47 development.
 
 ## Checksum
 
-SHA-256: `9bcc11f307232a2b383b127e1b7f08e4af6c0e91e6c3c4c08c4fc1932e4cdfb4`
+SHA-256: `b36565f85505f3ddb1b821a3e57a6562947d3a5b107f57db2faf5659c5ff1355`

@@ -59,6 +59,8 @@ sleep, password, or Lock Screen settings.
 - Click the **47** menu-bar icon for **Settings**, **Start Now**, or **Quit**.
 - Opening **System 47.app** also opens Settings. Its temporary Dock icon
   disappears when the Settings window closes.
+- Finder and the temporary Dock item use the included System 47 application
+  icon.
 
 ### Troubleshooting
 
@@ -74,7 +76,7 @@ sleep, password, or Lock Screen settings.
 - **More help:** open an issue with the Mac model, macOS version, expected and
   actual behavior, and `~/Library/Logs/System47Launcher.log`.
 
-SHA-256: `9bcc11f307232a2b383b127e1b7f08e4af6c0e91e6c3c4c08c4fc1932e4cdfb4`
+SHA-256: `b36565f85505f3ddb1b821a3e57a6562947d3a5b107f57db2faf5659c5ff1355`
 
 ## Original work and attribution
 
