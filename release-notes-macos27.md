@@ -1,74 +1,76 @@
-# System 47 Screen Saver — Modern macOS 27 Adaptation
+# System 47 2.5.02 — Free macOS 27 Background App
 
-This is the new August 2026 macOS adaptation of meWho’s System 47 Viewer 2.5.01.
+This release adapts meWho’s System 47 Viewer 2.5.01 into a lightweight,
+screen-saver-style background app for current macOS.
 
-It is no longer an Adobe Flash Player or Flash Projector application and does
-not require Adobe Flash. The obsolete 2022 projector runtime has been replaced
-by Ruffle and newly written native macOS Screen Saver, full-screen,
-multi-monitor and settings components.
+![System 47 LCARS interface preview — original artwork and animation by meWho](https://raw.githubusercontent.com/mikelawson68/System47-Releases/v2.5.02-macos27/images/system47_preview.png)
 
-For accuracy, the original System 47 SWF remains the preserved program-content
-format. Ruffle executes it without Adobe Flash.
+*Original System 47 LCARS artwork and animation by meWho.*
 
-## Compatibility
+## Why it is an app instead of a `.saver`
 
-- macOS 27 or later
-- Apple Silicon: M1, M2, M3, M4, M5 and later families
-- Intel Macs capable of running macOS 27
-- Universal `arm64` and `x86_64` native binaries
-- Multiple displays with independent starting-program assignments
+Apple’s legacy third-party screen-saver host does not reliably support System
+47’s Web/Ruffle renderer on current macOS. Testing reproduced black screens,
+static fallback images, and unwanted login transitions. Version 2.5.02 runs as
+a small background app instead, without using ScreenSaverEngine.
 
 ## Installation
 
-1. Download `System47-2.5.01-FINAL-macOS27-universal.zip` below.
-2. Unzip it.
-3. Double-click `Install System 47.command`.
-4. If macOS blocks the installer script, Control-click it, choose **Open**, and
-   click **Open** once.
-5. If it is still blocked, open **System Settings → Privacy & Security**, scroll
-   to **Security**, click **Open Anyway** for `Install System 47.command`,
-   authenticate when prompted, and confirm **Open**. Only approve the installer
-   from this official System 47 download.
-6. Configure each display in the System 47 settings panel.
-7. Select **System 47** in **System Settings → Wallpaper → Screen Saver**.
+1. Download `System47-2.5.02-FINAL-macOS27-universal.zip` below.
+2. Unzip it and double-click `Install System 47.command`.
+3. If blocked, Control-click the installer and choose **Open**, or use **System
+   Settings → Privacy & Security → Open Anyway**.
+4. Choose a standard **Start after** interval, sound, and starting program for
+   each display. Click **Save**.
+5. For conflict-free use, set Apple’s separate screen saver to **Never**. The
+   installer does not change that setting automatically.
 
-## October 9 maintenance update
+## Operation
 
-- The System Settings preview now renders the live System 47 animation instead
-  of a static image.
-- The Options sheet now closes normally with its Done button or window close
-  control.
-- The native screen saver launches the full-screen companion directly, while a
-  signed per-user launcher provides System 47's idle timer and top-right hot
-  corner without requiring Xcode or Apple Command Line Tools.
-- Installation disables Apple's overlapping screen-saver corner and idle timer,
-  preventing the static bridge preview from covering System 47. Display sleep
-  and screen-lock requirements are unchanged.
-- **Never** stores a true zero interval and no longer falls back to ten minutes.
-  While Never is selected, the launcher also prevents Apple's separate idle
-  screen from appearing behind the disabled System 47 timer.
-- Screen Sharing pointer updates no longer dismiss the full-screen animation.
-- The animation loader uses IPv6 loopback, fixing the permanent white screen
-  seen on Macs where IPv4 loopback is unavailable or filtered.
-- Existing installations replace and restart the System 47 watcher during
-  upgrade.
+- Starts automatically after System 47’s saved idle interval.
+- Defaults to **20 minutes**; **Never** disables automatic starting.
+- Starts manually after a three-second pointer hold at the **top center**.
+- Provides a Dock-free **47** menu-bar icon for Settings, Start Now, and Quit.
+- Stops on pointer movement, click, scroll, or key press.
+- Can optionally go to the macOS login screen after closing; off by default.
+- Starts its lightweight background process automatically at user login.
+- Does not change Apple’s timer, Hot Corners, display sleep, or security.
 
-The application and Screen Saver components are Developer ID signed by
-artistpro, LLC, use hardened runtime, and are notarized and stapled by Apple.
+## Compatibility and security
 
-## Credits
+- macOS 15 or later
+- Apple Silicon and Intel universal binaries
+- Multiple displays
+- Developer ID signed, hardened, notarized, and stapled by Apple
+- No Adobe Flash requirement; original SWF content runs through Ruffle
 
-Original System 47 program and content by **meWho**. Space images courtesy
-NASA/JPL-Caltech. System 47 is freeware, provided “as is,” without warranty of
-any kind.
+## Troubleshooting
 
-Modern macOS adaptation and packaging freely contributed by
-**artistpro, LLC — Mike Lawson**.
+- **Both System 47 and Apple’s saver start:** set Apple’s saver to Never.
+- **Top-center hold does nothing:** hold at the top edge, centered, for three
+  full seconds; rerun the installer if necessary.
+- **Automatic start does nothing:** select a non-Never interval and click Save.
+- **It will not close:** move the pointer distinctly, click, scroll, or press a
+  key.
+- **Unwanted sound:** clear the sound checkbox and click Save.
+- **More help:** open an issue with Mac model, macOS version, expected and
+  actual behavior, and `~/Library/Logs/System47Launcher.log`.
+
+## Original work and attribution
+
+**System 47 is the original creative work of meWho.** meWho created the
+original program, LCARS artwork and interface, animations, sounds, and SWF
+content. Space images are courtesy NASA/JPL-Caltech. We did not create or claim
+authorship of that art, animation, audio, or original program content.
+
+artistpro, LLC and Mike Lawson adapted meWho’s existing free work for current
+macOS by replacing the obsolete projector runtime and adding universal macOS
+rendering, multi-monitor settings, idle monitoring, and manual launch. This
+adaptation is free of charge and provided as is, without warranty.
 
 Visit [mewho.com/system47](https://www.mewho.com/system47/) for the original
 releases and to support future System 47 development.
 
 ## Checksum
 
-SHA-256:
-`e1ce3ff63abc0225037dbf6bd8ff87b9f92f217829d800084de5fd8535737859`
+SHA-256: `9bcc11f307232a2b383b127e1b7f08e4af6c0e91e6c3c4c08c4fc1932e4cdfb4`

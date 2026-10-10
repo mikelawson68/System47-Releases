@@ -6,17 +6,24 @@
 @property(nonatomic, strong) NSMutableArray<NSWindow *> *windows;
 @property(nonatomic, strong) NSMutableArray<ScreenSaverView *> *views;
 @property(nonatomic, strong) id eventMonitor;
+@property(nonatomic, strong) NSTimer *dismissalTimer;
 @property(nonatomic) CFAbsoluteTime inputArmedAt;
+@property(nonatomic) NSPoint launchPointer;
 @end
 
 @interface System47SettingsDelegate : NSObject <NSApplicationDelegate>
 @property(nonatomic, strong) NSWindow *window;
 @property(nonatomic, strong) NSPopUpButton *idlePopup;
 @property(nonatomic, strong) NSButton *audioButton;
+@property(nonatomic, strong) NSButton *lockButton;
 @property(nonatomic, strong) NSMutableArray<NSDictionary *> *monitorRows;
 @end
 
 @implementation System47SettingsDelegate
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
+    return YES;
+}
 
 - (NSString *)identifierForScreen:(NSScreen *)screen index:(NSInteger)index {
     NSNumber *number = screen.deviceDescription[@"NSScreenNumber"];
@@ -41,23 +48,32 @@
     self.window.title = @"System 47 Settings";
     NSView *content = self.window.contentView;
     [content addSubview:[self label:@"System 47 Full-Screen Saver" frame:NSMakeRect(24, height-48, 400, 25) bold:YES]];
-    [content addSubview:[self label:@"Starts outside Apple’s legacy screen-saver sandbox." frame:NSMakeRect(24, height-73, 500, 22) bold:NO]];
+    [content addSubview:[self label:@"Runs as a lightweight background app; hold the pointer at top center for three seconds to start." frame:NSMakeRect(24, height-73, 700, 22) bold:NO]];
 
     [content addSubview:[self label:@"Start after" frame:NSMakeRect(24, height-112, 90, 22) bold:YES]];
     self.idlePopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(112, height-118, 180, 28) pullsDown:NO];
-    NSArray *idleNames = @[@"Never", @"5 seconds", @"1 minute", @"5 minutes", @"10 minutes", @"30 minutes", @"1 hour", @"3 hours"];
-    NSArray *idleValues = @[@0, @5, @60, @300, @600, @1800, @3600, @10800];
+    NSArray *idleNames = @[@"Never", @"1 minute", @"2 minutes", @"5 minutes", @"10 minutes", @"20 minutes", @"30 minutes", @"1 hour"];
+    NSArray *idleValues = @[@0, @60, @120, @300, @600, @1200, @1800, @3600];
     [self.idlePopup addItemsWithTitles:idleNames];
     for (NSInteger i=0; i<idleValues.count; i++) self.idlePopup.itemArray[i].representedObject = idleValues[i];
-    NSTimeInterval savedIdle = [[[NSUserDefaults alloc] initWithSuiteName:@"com.mewho.system47.fullscreen"] doubleForKey:@"idleSeconds"];
-    NSInteger best = 0; for (NSInteger i=0; i<idleValues.count; i++) if ([idleValues[i] doubleValue] == savedIdle) best = i;
-    [self.idlePopup selectItemAtIndex:best]; [content addSubview:self.idlePopup];
+    NSDictionary *settings = [NSUserDefaults.standardUserDefaults persistentDomainForName:@"com.mewho.system47.fullscreen"] ?: @{};
+    id savedIdleObject = settings[@"idleSeconds"];
+    NSTimeInterval savedIdle = savedIdleObject ? [savedIdleObject doubleValue] : 1200.0;
+    NSInteger best = 5;
+    for (NSInteger i=0; i<idleValues.count; i++) if ([idleValues[i] doubleValue] == savedIdle) best = i;
+    [self.idlePopup selectItemAtIndex:best];
+    [content addSubview:self.idlePopup];
 
     self.audioButton = [NSButton checkboxWithTitle:@"Play original System 47 sound" target:nil action:nil];
     self.audioButton.frame = NSMakeRect(320, height-116, 300, 26);
     ScreenSaverDefaults *defaults = [ScreenSaverDefaults defaultsForModuleWithName:@"com.mewho.system47.screensaver"];
     self.audioButton.state = [defaults objectForKey:@"audioEnabled"] ? ([defaults boolForKey:@"audioEnabled"] ? NSControlStateValueOn : NSControlStateValueOff) : NSControlStateValueOn;
     [content addSubview:self.audioButton];
+
+    self.lockButton = [NSButton checkboxWithTitle:@"Go to the macOS login screen when System 47 closes" target:nil action:nil];
+    self.lockButton.frame = NSMakeRect(320, height-142, 390, 26);
+    self.lockButton.state = [settings[@"lockOnExit"] boolValue] ? NSControlStateValueOn : NSControlStateValueOff;
+    [content addSubview:self.lockButton];
 
     CGFloat y = height - 158;
     [content addSubview:[self label:@"Display" frame:NSMakeRect(24,y,220,22) bold:YES]];
@@ -92,8 +108,11 @@
 }
 
 - (void)save:(id)sender {
-    NSUserDefaults *settings = [[NSUserDefaults alloc] initWithSuiteName:@"com.mewho.system47.fullscreen"];
-    [settings setDouble:[self.idlePopup.selectedItem.representedObject doubleValue] forKey:@"idleSeconds"];
+    NSUserDefaults *defaultsStore = NSUserDefaults.standardUserDefaults;
+    NSMutableDictionary *settings = [[defaultsStore persistentDomainForName:@"com.mewho.system47.fullscreen"] mutableCopy] ?: [NSMutableDictionary dictionary];
+    settings[@"idleSeconds"] = self.idlePopup.selectedItem.representedObject;
+    settings[@"lockOnExit"] = @(self.lockButton.state == NSControlStateValueOn);
+    [defaultsStore setPersistentDomain:settings forName:@"com.mewho.system47.fullscreen"];
     ScreenSaverDefaults *defaults = [ScreenSaverDefaults defaultsForModuleWithName:@"com.mewho.system47.screensaver"];
     [defaults setBool:self.audioButton.state == NSControlStateValueOn forKey:@"audioEnabled"];
     for (NSDictionary *row in self.monitorRows) {
@@ -101,7 +120,7 @@
         [defaults setInteger:[row[@"program"] indexOfSelectedItem] forKey:[@"scene." stringByAppendingString:identifier]];
         [defaults setBool:[row[@"behavior"] indexOfSelectedItem] == 0 forKey:[@"rotate." stringByAppendingString:identifier]];
     }
-    [defaults synchronize]; [settings synchronize];
+    [defaults synchronize]; [defaultsStore synchronize];
     self.window.title = @"System 47 Settings — Saved";
 }
 
@@ -133,16 +152,17 @@
     self.views = [NSMutableArray array];
     for (NSScreen *screen in NSScreen.screens) {
         NSRect frame = screen.frame;
-        NSWindow *window = [[NSWindow alloc] initWithContentRect:frame
-                                                       styleMask:NSWindowStyleMaskBorderless
-                                                         backing:NSBackingStoreBuffered
-                                                           defer:NO
-                                                          screen:screen];
+        NSPanel *window = [[NSPanel alloc] initWithContentRect:frame
+                                                     styleMask:NSWindowStyleMaskBorderless
+                                                       backing:NSBackingStoreBuffered
+                                                         defer:NO
+                                                        screen:screen];
         window.backgroundColor = NSColor.blackColor;
         window.level = NSScreenSaverWindowLevel;
         window.opaque = YES;
         window.acceptsMouseMovedEvents = YES;
         window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces |
+                                    NSWindowCollectionBehaviorCanJoinAllApplications |
                                     NSWindowCollectionBehaviorFullScreenAuxiliary |
                                     NSWindowCollectionBehaviorStationary;
         ScreenSaverView *view = [[saverBundle.principalClass alloc]
@@ -150,7 +170,7 @@
                                  isPreview:NO];
         window.contentView = view;
         [window setFrame:frame display:YES];
-        [window makeKeyAndOrderFront:nil];
+        [window orderFrontRegardless];
         [view startAnimation];
         [self.windows addObject:window];
         [self.views addObject:view];
@@ -158,108 +178,47 @@
 
     [NSApp activateIgnoringOtherApps:YES];
     self.inputArmedAt = CFAbsoluteTimeGetCurrent() + 1.5;
+    self.launchPointer = NSEvent.mouseLocation;
     // Screen Sharing continuously delivers pointer-motion events to the remote
     // Mac while a session is being observed. Treating mouseMoved as dismissal
     // input makes the saver flash once and immediately quit on remotely managed
     // Macs. Explicit input still dismisses the saver normally.
-    NSEventMask mask = NSEventMaskKeyDown | NSEventMaskLeftMouseDown | NSEventMaskRightMouseDown |
-                       NSEventMaskOtherMouseDown | NSEventMaskScrollWheel;
+    NSEventMask mask = NSEventMaskMouseMoved | NSEventMaskLeftMouseDragged | NSEventMaskRightMouseDragged |
+                       NSEventMaskOtherMouseDragged | NSEventMaskKeyDown | NSEventMaskLeftMouseDown |
+                       NSEventMaskRightMouseDown | NSEventMaskOtherMouseDown | NSEventMaskScrollWheel;
     __weak typeof(self) weakSelf = self;
     self.eventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:mask handler:^NSEvent *(NSEvent *event) {
         if (CFAbsoluteTimeGetCurrent() >= weakSelf.inputArmedAt) [NSApp terminate:nil];
         return event;
+    }];
+    self.dismissalTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer *timer) {
+        if (CFAbsoluteTimeGetCurrent() < weakSelf.inputArmedAt) return;
+        NSPoint current = NSEvent.mouseLocation;
+        CGFloat dx = current.x - weakSelf.launchPointer.x;
+        CGFloat dy = current.y - weakSelf.launchPointer.y;
+        if ((dx * dx) + (dy * dy) > 9.0) [NSApp terminate:nil];
     }];
     NSLog(@"SYSTEM47_FULLSCREEN_READY displays=%lu", (unsigned long)self.windows.count);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
     if (self.eventMonitor) [NSEvent removeMonitor:self.eventMonitor];
+    [self.dismissalTimer invalidate];
     for (ScreenSaverView *view in self.views) [view stopAnimation];
     for (NSWindow *window in self.windows) [window orderOut:nil];
+    NSDictionary *settings = [NSUserDefaults.standardUserDefaults persistentDomainForName:@"com.mewho.system47.fullscreen"] ?: @{};
+    if ([settings[@"lockOnExit"] boolValue]) {
+        NSTask *lockTask = [[NSTask alloc] init];
+        lockTask.executableURL = [NSURL fileURLWithPath:@"/usr/bin/pmset"];
+        lockTask.arguments = @[@"displaysleepnow"];
+        [lockTask launchAndReturnError:nil];
+    }
 }
 @end
-
-static void RunWatcher(void) {
-    NSString *executable = NSBundle.mainBundle.executablePath;
-    __block NSTask *viewer = nil;
-    __block BOOL launchedForThisIdlePeriod = NO;
-    __block BOOL launchedFromCorner = NO;
-    __block BOOL launchedFromSystem = NO;
-    __block NSInteger cornerTicks = 0;
-    __block CFAbsoluteTime viewerStartedAt = 0;
-    NSUserDefaults *settings = [[NSUserDefaults alloc] initWithSuiteName:@"com.mewho.system47.fullscreen"];
-
-    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
-                                                       dispatch_get_global_queue(QOS_CLASS_UTILITY, 0));
-    dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, 0), NSEC_PER_SEC, NSEC_PER_SEC / 5);
-    dispatch_source_set_event_handler(timer, ^{
-        CFTimeInterval idle = CGEventSourceSecondsSinceLastEventType(kCGEventSourceStateCombinedSessionState,
-                                                                     kCGAnyInputEventType);
-        NSTimeInterval configured = [settings doubleForKey:@"idleSeconds"];
-        NSTimeInterval threshold = configured >= 5.0 ? configured : 0.0;
-        if (viewer && !viewer.running) viewer = nil;
-        if (!launchedFromSystem && viewer && viewer.running && CFAbsoluteTimeGetCurrent() - viewerStartedAt > 2.0 && idle < 1.0) {
-            [viewer terminate];
-            viewer = nil;
-        }
-        BOOL systemRequested = [[NSFileManager defaultManager] fileExistsAtPath:@"/tmp/com.mewho.system47.system-request"];
-        if (systemRequested && !viewer && !launchedFromSystem) {
-            viewer = [[NSTask alloc] init];
-            viewer.executableURL = [NSURL fileURLWithPath:executable];
-            viewer.arguments = @[@"--show"];
-            [viewer launchAndReturnError:nil];
-            viewerStartedAt = CFAbsoluteTimeGetCurrent();
-            launchedFromSystem = YES;
-        } else if (!systemRequested && launchedFromSystem) {
-            if (viewer && viewer.running) [viewer terminate];
-            viewer = nil;
-            launchedFromSystem = NO;
-        }
-
-        CGEventRef locationEvent = CGEventCreate(NULL);
-        CGPoint mouse = locationEvent ? CGEventGetLocation(locationEvent) : CGPointMake(-1000, -1000);
-        if (locationEvent) CFRelease(locationEvent);
-        CGDirectDisplayID displays[32]; uint32_t count = 0;
-        CGGetActiveDisplayList(32, displays, &count);
-        BOOL inBottomRightCorner = NO;
-        for (uint32_t i = 0; i < count; i++) {
-            CGRect bounds = CGDisplayBounds(displays[i]);
-            if (mouse.x >= CGRectGetMaxX(bounds) - 4 && mouse.x <= CGRectGetMaxX(bounds) + 1 &&
-                mouse.y >= CGRectGetMaxY(bounds) - 4 && mouse.y <= CGRectGetMaxY(bounds) + 1) {
-                inBottomRightCorner = YES; break;
-            }
-        }
-        if (inBottomRightCorner) cornerTicks++; else { cornerTicks = 0; launchedFromCorner = NO; }
-        if (cornerTicks >= 2 && !launchedFromCorner && !viewer) {
-            viewer = [[NSTask alloc] init];
-            viewer.executableURL = [NSURL fileURLWithPath:executable];
-            viewer.arguments = @[@"--show"];
-            [viewer launchAndReturnError:nil];
-            viewerStartedAt = CFAbsoluteTimeGetCurrent();
-            launchedFromCorner = YES;
-        }
-        if (threshold > 0.0 && idle < threshold) launchedForThisIdlePeriod = NO;
-        if (threshold > 0.0 && !launchedForThisIdlePeriod && !viewer && idle >= threshold) {
-            viewer = [[NSTask alloc] init];
-            viewer.executableURL = [NSURL fileURLWithPath:executable];
-            viewer.arguments = @[@"--show"];
-            [viewer launchAndReturnError:nil];
-            viewerStartedAt = CFAbsoluteTimeGetCurrent();
-            launchedForThisIdlePeriod = YES;
-        }
-    });
-    dispatch_resume(timer);
-    [[NSRunLoop currentRunLoop] run];
-}
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
         NSString *mode = argc > 1 ? [NSString stringWithUTF8String:argv[1]] : @"--settings";
-        BOOL watch = [mode isEqualToString:@"--watch"];
-        if (watch) {
-            RunWatcher();
-            return 0;
-        }
         NSApplication *application = NSApplication.sharedApplication;
         id delegate = [mode isEqualToString:@"--show"] ? [[System47FullScreenDelegate alloc] init] : [[System47SettingsDelegate alloc] init];
         application.delegate = delegate;
