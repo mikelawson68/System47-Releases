@@ -32,17 +32,21 @@ format. Ruffle executes it without Adobe Flash.
 6. Configure each display in the System 47 settings panel.
 7. Select **System 47** in **System Settings → Wallpaper → Screen Saver**.
 
-## August 30 maintenance update
+## October 9 maintenance update
 
 - The System Settings preview now renders the live System 47 animation instead
   of a static image.
 - The Options sheet now closes normally with its Done button or window close
   control.
 - The native screen saver launches the full-screen companion directly, while a
-  per-user watcher provides System 47's idle timer and bottom-right hot corner.
-- Installation removes only a competing Apple “Start Screen Saver” assignment
-  from that corner, preventing the static bridge preview from covering System
-  47. Other hot-corner assignments are preserved.
+  signed per-user launcher provides System 47's idle timer and top-right hot
+  corner without requiring Xcode or Apple Command Line Tools.
+- Installation disables Apple's overlapping screen-saver corner and idle timer,
+  preventing the static bridge preview from covering System 47. Display sleep
+  and screen-lock requirements are unchanged.
+- **Never** stores a true zero interval and no longer falls back to ten minutes.
+  While Never is selected, the launcher also prevents Apple's separate idle
+  screen from appearing behind the disabled System 47 timer.
 - Screen Sharing pointer updates no longer dismiss the full-screen animation.
 - The animation loader uses IPv6 loopback, fixing the permanent white screen
   seen on Macs where IPv4 loopback is unavailable or filtered.
@@ -67,4 +71,4 @@ releases and to support future System 47 development.
 ## Checksum
 
 SHA-256:
-`17b7a59ef7c5641cb8d86ab87eff920530e75e4c4d41efe3adf4fd0957df72c4`
+`e1ce3ff63abc0225037dbf6bd8ff87b9f92f217829d800084de5fd8535737859`

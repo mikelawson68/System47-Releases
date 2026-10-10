@@ -14,10 +14,9 @@ This repository is used to host downloads, track bugs, and distribute test build
 * **System 47 Screen Saver — modern macOS adaptation** (macOS 27, Apple Silicon and Intel)
 
 ## Downloads
-* **Static-image hot-corner repair:** if the corner shows a still image while
-  the app's Preview works, use the [direct launcher repair](src/launcher/README.md).
-  It adds a top-right hot corner and three-hour timer to an existing native
-  installation. The published release ZIP is unchanged.
+* **Static-image and idle-timer fixes:** the notarized macOS package now
+  includes the signed direct launcher. It provides the top-right corner and
+  saved idle timer without requiring Xcode or Apple Command Line Tools.
 * Versions previously released in 2021-2022, visit this **[Release](../../releases/tag/v2.5.1)** page.
 * Latest **Test Version** ⚠️ (July 8, 2026), please visit this **[Test Release](../../releases/tag/v2.5.2-test3)** page.
 * **macOS 27 Screen Saver:** download the notarized universal package from the **[macOS 27 Release](../../releases/tag/v2.5.01-macos27)** page.
@@ -64,15 +63,18 @@ signing, hardened runtime and Apple notarization.
 
 The current package includes an animated System Settings preview, a closable
 Options sheet, direct native-saver launch of the full-screen companion, and a
-per-user watcher for System 47's idle timer and bottom-right hot corner. During
-installation, only a competing Apple “Start Screen Saver” assignment on that
-corner is removed; all other hot-corner assignments are preserved.
+signed per-user launcher for System 47's idle timer and top-right hot corner.
+The installer disables Apple's overlapping screen-saver corner and idle timer
+so they cannot cover System 47 with a still preview. Display sleep and
+screen-lock requirements are unchanged.
 
-Setting **Start after** to **Never** disables only the automatic idle launch.
-Manual launch and the configured hot corner remain available.
+Setting **Start after** to **Never** stores a true zero interval and disables
+automatic idle launch; it is no longer converted to ten minutes. Manual launch
+and the configured hot corner remain available, and the helper prevents
+Apple's separate idle screen from appearing behind the disabled timer.
 
 SHA-256:
-`17b7a59ef7c5641cb8d86ab87eff920530e75e4c4d41efe3adf4fd0957df72c4`
+`e1ce3ff63abc0225037dbf6bd8ff87b9f92f217829d800084de5fd8535737859`
 
 Original System 47 program and content by **meWho**. Space images courtesy
 NASA/JPL-Caltech. System 47 is freeware, provided “as is,” without warranty of
